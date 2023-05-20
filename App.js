@@ -1,112 +1,78 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  RefreshControl,
+  FlatList,
+  SectionList,
+} from 'react-native';
 
 const App = () => {
+  const [Sections, setSections] = useState([
+    {
+      title: 'Title 1',
+      data: ['Item 1-1', 'Item 1-2'],
+    },
+  ]);
+  const onRefresh = () => {
+    setRefreshing(true);
+    const adding_index = Sections.length + 1;
+    setSections([
+      ...Sections,
+      {
+        title: 'Title ' + adding_index,
+        data: ['Item ' + adding_index + '-1', 'Item ' + adding_index + '-2'],
+      },
+    ]);
+    setRefreshing(false);
+  };
+  const [Refreshing, setRefreshing] = useState(false);
+
   return (
-    <View style={styles.body}>
-      <View style={styles.row}>
-        <View style={styles.view1}>
-          <Text style={styles.text}>1</Text>
+    <SectionList
+      keyExtractor={(item, index) => index.toString()}
+      sections={Sections}
+      renderItem={({item}) => (
+        <View style={styles.item}>
+          <Text style={styles.text_item}>{item}</Text>
         </View>
-        <View style={styles.view2}>
-          <Text style={styles.text}>2</Text>
+      )}
+      renderSectionHeader={({section}) => (
+        <View style={styles.header}>
+          <Text style={styles.text_header}>{section.title}</Text>
         </View>
-        <View style={styles.view3}>
-          <Text style={styles.text}>3</Text>
-        </View>
-      </View>
-      <View style={styles.row}>
-        <View style={styles.view4}>
-          <Text style={styles.text}>4</Text>
-        </View>
-      </View>
-
-      <View style={styles.row}>
-        <View style={styles.view5}>
-          <Text style={styles.text}>5</Text>
-        </View>
-      </View>
-
-      <View style={styles.bigrow}>
-        <View style={styles.view6}>
-          <Text style={styles.text}>5</Text>
-        </View>
-        <View style={styles.view7}>
-          <Text style={styles.text}>7</Text>
-        </View>
-      </View>
-    </View>
+      )}
+      refreshControl={
+        <RefreshControl refreshing={Refreshing} onRefresh={onRefresh} />
+      }
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  body: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: '#ffffff',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
+  header: {
+    backgroundColor: '#4ae1fa',
     justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
   },
-  bigrow: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-  },
-  view1: {
-    flex: 1,
-    backgroundColor: '#00ffff',
+  item: {
+    borderBottomWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  view2: {
-    flex: 2,
-    backgroundColor: 'pink',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  view3: {
-    flex: 3,
-    backgroundColor: 'yellow',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  view4: {
-    flex: 1,
-    backgroundColor: 'green',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  view5: {
-    flex: 1,
-    backgroundColor: 'purple',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  view6: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  view7: {
-    flex: 1,
-    backgroundColor: 'orange',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    color: 'black',
-    fontSize: 35,
+  text_header: {
+    color: '#000000',
+    fontSize: 45,
     fontStyle: 'italic',
     margin: 10,
+  },
+  text_item: {
+    color: '#000000',
+    fontSize: 35,
+    margin: 5,
   },
 });
 
